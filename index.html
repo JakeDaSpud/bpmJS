@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPM Metronome</title>
+</head>
+<body>
+    
+    <div>
+        <h3>Current BPM:</h3>
+        <p id = "BPMLabel">75</p>
+    </div>
+
+    <button onclick = "metronomeStart()">Start</button>
+
+    <div class = "buttonGroup">
+        <button onclick="increaseBPM()">+</button>
+        <button onclick="decreaseBPM()">-</button>
+        <button onclick="resetBPM()">Reset BPM</button>
+    </div>
+
+</body>
+
+<style>
+
+body {
+    color: azure;
+    background-color: cadetblue;
+}
+
+</style>
+
+<script>
+
+//amount of beats per minute, 75 default
+let bpm = 75;
+
+//returns the "pulse" of the current bpm, so how long it takes between each click
+function getBPM() {
+    return 60 / bpm;
+}
+
+//resets bpm to default of 75
+function resetBPM() {
+    bpm = 75;
+    document.getElementById("BPMLabel").innerHTML = bpm;
+}
+
+//start metronome
+function metronomeStart() {
+
+}
+
+//stop metronome
+function metronomeStop() {
+
+}
+
+//increase bpm by 1
+function increaseBPM() {
+    bpm++;
+    document.getElementById("BPMLabel").innerHTML = bpm;
+}
+
+//decrease bpm by 1
+function decreaseBPM() {
+    bpm--;
+    document.getElementById("BPMLabel").innerHTML = bpm;
+}
+
+</script>
+
+</html>
