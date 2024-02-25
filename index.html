@@ -12,11 +12,14 @@
         <p id = "BPMLabel">75</p>
     </div>
 
-    <button onclick = "metronomeStart()">Start</button>
+    <button onclick = "metronomeFlip(1)" id = "playButton">Start</button>
 
     <div class = "buttonGroup">
-        <button onclick="increaseBPM()">+</button>
-        <button onclick="decreaseBPM()">-</button>
+        <div class = "modifyButtonGroup">
+            <button onclick="increaseBPM()">+</button>
+            <button onclick="decreaseBPM()">-</button>
+        </div>
+
         <button onclick="resetBPM()">Reset BPM</button>
     </div>
 
@@ -27,6 +30,30 @@
 body {
     color: azure;
     background-color: cadetblue;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    height: 80vh;
+    margin: 15px;
+}
+
+.buttonGroup {
+    display: flex;
+    flex-direction: column;
+
+    padding: 15px;
+    border-radius: 20px;
+    background-color: rgb(89, 144, 146);
+}
+
+.modifyButtonGroup {
+    display: flex;
+    padding-bottom: 5px;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
 </style>
@@ -36,9 +63,21 @@ body {
 //amount of beats per minute, 75 default
 let bpm = 75;
 
+//metronome click sound, link [https://pixabay.com/sound-effects/metronome-85688/]
+let metronomeClick = new Audio('metronomeClick.mp3');
+
+//state of audio
+let isPlaying = false;
+
+//interval for playing audio
+let bpmInterval = null;
+
+console.log(getPulse());
+
 //returns the "pulse" of the current bpm, so how long it takes between each click
-function getBPM() {
-    return 60 / bpm;
+//calculation for ms length of 1 beat / quarter note is 60,000 / bpm
+function getPulse() {
+    return 60000 / bpm;
 }
 
 //resets bpm to default of 75
@@ -47,26 +86,64 @@ function resetBPM() {
     document.getElementById("BPMLabel").innerHTML = bpm;
 }
 
-//start metronome
-function metronomeStart() {
+//start / stop metronome
+//state == 1 : turn on metronome
+//state == 0 : turn off metronome
+function metronomeFlip(state) {
 
+    switch (state) {
+        //false / turn off state
+        case 0:
+            document.getElementById("playButton").innerHTML = "Start";
+
+            clearInterval(bpmInterval);
+            isPlaying = false;
+
+            console.log("Metronome Stopped")
+
+            document.getElementById("playButton").setAttribute("onclick", "metronomeFlip(1)");
+            break;
+
+        //true / turn on state
+        case 1:
+            document.getElementById("playButton").innerHTML = "Stop";
+
+            //playing click sound every current BPM pulse
+            //setInterval should use a full function, not just directly passing audio.play()
+            if (!isPlaying) {
+                bpmInterval = setInterval(() => metronomeClick.play(), getPulse());
+                isPlaying = true;
+
+                console.log("Metronome Started at " + bpm + "bpm: " + getPulse() + "ms pulse")
+            }
+
+            document.getElementById("playButton").setAttribute("onclick", "metronomeFlip(0)");
+            break;
+    }
 }
+
+
 
 //stop metronome
 function metronomeStop() {
+    document.getElementById("playButton").innerHTML = "Start";
+    document.getElementById("playButton").onclick = "metronomeStart()";
 
+    metronomeClick.pause();
 }
 
 //increase bpm by 1
 function increaseBPM() {
     bpm++;
     document.getElementById("BPMLabel").innerHTML = bpm;
+    console.log("BPM Increased: " + bpm);
 }
 
 //decrease bpm by 1
 function decreaseBPM() {
     bpm--;
     document.getElementById("BPMLabel").innerHTML = bpm;
+    console.log("BPM Decreased: " + bpm);
 }
 
 </script>
